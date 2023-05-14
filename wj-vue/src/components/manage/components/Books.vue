@@ -119,7 +119,7 @@
           :page-sizes="[10, 16, 20, 24]"
           :page-size="100"
           layout="total, sizes, prev, pager, next, jumper"
-          :total=40
+          :total=this.total
           >
         </el-pagination>
       </el-row>
@@ -134,7 +134,7 @@
           currentDate: new Date(),
           currentPage: 1,
           pagesize: 10,
-          total: "50",
+          total: 0,
           formInline: {
             searchtype:"",
             searchvalue:""
@@ -202,7 +202,8 @@
                 type: 'success'
               })
               try{
-                this.books = resp.data
+                this.books = resp.data.books,
+                this.total=resp.data.page_total
               }catch(e){
                 console.log(e)
               }
@@ -214,6 +215,7 @@
             }
           })
           .catch(failResponse => {
+            console.log(resp)
             this.$message({
                 message: '查询失败2',
                 type: 'error'
@@ -267,7 +269,7 @@
           
         },
         clkmodify(book){
-          console.log(1)
+          // console.log(1)
           console.log(book)
           this.createbook.author=book.author,
           this.createbook.cover=book.cover,
@@ -281,7 +283,7 @@
           this.dialogModifyVisible = true
         },
         submitmodify(id){
-          console.log(2)
+          // console.log(2)
           console.log(this.createbook.id)
           this.$axios.patch('/books/'+this.createbook.id, this.createbook)
           .then(resp => {

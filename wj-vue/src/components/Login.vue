@@ -63,6 +63,7 @@
             }
           })
           .catch(failResponse => {
+            console.log(resp)
             this.$message({
                 message: '账号或密码错误',
                 type: 'error'
