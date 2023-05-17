@@ -136,7 +136,7 @@
           pagesize: 10,
           total: 0,
           formInline: {
-            searchtype:"",
+            searchtype:"title",
             searchvalue:""
           },      
           id: 0,
@@ -190,10 +190,35 @@
 
         },
         getall(){
-          this.$axios.get('/books',{params:{
-            page_size:this.pagesize,
-            page_num:this.currentPage
-          }})
+          var parames="/books?page_size="+this.pagesize+"&page_num="+this.currentPage
+          var value=this.formInline.searchvalue;
+          if(value!="")
+          {
+            switch (this.formInline.searchtype) {
+              case "author":
+              parames+="&author="+value;
+              break;
+              case "press":
+              parames+="&press="+value;
+              break;
+              case "title":
+              parames+="&title="+value;
+              break;
+              case "title":
+              parames+="&title="+value;
+              break;
+              case "title":
+              parames+="&title="+value;
+              break; 
+              default:
+                break;
+            };
+          }
+          // this.$axios.get('/books',{params:{
+          //   page_size:this.pagesize,
+          //   page_num:this.currentPage
+          // }})
+          this.$axios.get(parames)
           .then(resp=>{
             console.log(resp)
             if(resp.status === 200){
@@ -203,7 +228,7 @@
               })
               try{
                 this.books = resp.data.books,
-                this.total=resp.data.page_total
+                this.total = resp.data.page_total
               }catch(e){
                 console.log(e)
               }
@@ -319,28 +344,9 @@
           this.getall()
         },
         searchSubmit(){
-          var parames="?page_size="+this.pagesize+"&page_num="+this.currentPage
-          var value=this.formInline.value;
-          switch (this.formInline.type) {
-            case "title":
-              parames+="&title"+value;
-              break;
-            case "title":
-            parames+="&title"+value;
-            break;
-            case "title":
-            parames+="&title"+value;
-            break;
-            case "title":
-            parames+="&title"+value;
-            break;
-            case "title":
-            parames+="&title"+value;
-            break; 
-            default:
-              break;
-          }
+          this.getall();
         }
+
     }
   }
   </script>
