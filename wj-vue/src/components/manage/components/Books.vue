@@ -214,10 +214,6 @@
                 break;
             };
           }
-          // this.$axios.get('/books',{params:{
-          //   page_size:this.pagesize,
-          //   page_num:this.currentPage
-          // }})
           this.$axios.get(parames)
           .then(resp=>{
             console.log(resp)
@@ -346,7 +342,6 @@
         searchSubmit(){
           this.getall();
         }
-
     }
   }
   </script>
