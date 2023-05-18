@@ -96,7 +96,21 @@
                       <el-button type="primary" @click="submitmodify()">修 改</el-button>
                     </div>
                 </el-dialog>
-                <el-button type="success" class="purchasebutton" round>购买</el-button><br>
+                <el-button type="success" class="purchasebutton" round @click="purchaseclick(o.id)">购买</el-button><br>
+                <el-dialog title="购买信息" :visible.sync="pruchaseFormVisible">
+                  <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
+                    <el-form-item label="价格">
+                      <el-input v-model="purchase.price"></el-input>
+                    </el-form-item>
+                    <el-form-item label="数量">
+                      <el-input v-model="purchase.quantity"></el-input>
+                    </el-form-item>
+                  </el-form>
+                    <div slot="footer" class="dialog-footer">
+                      <el-button @click="resetpurchase">重 置</el-button>
+                      <el-button type="primary" @click="submitpurchase">确 定</el-button>
+                    </div>
+                </el-dialog>
                 <el-button type="primary" class="salebutton" round>出售</el-button>
                 <!-- <el-button type="text" class="salebutton">操作按钮</el-button>s -->
               </div>
@@ -105,6 +119,7 @@
                 <div style="display: inline-block; font-size: 6px;"><strong>作者: </strong>{{o.author}}</div><br>
                 <div style="display: inline-block; font-size: 6px;"><strong>isbn: </strong>{{o.isbn}}</div><br>
                 <div style="display: inline-block; font-size: 6px;"><strong>出版社: </strong>{{o.press}}</div><br>
+                <div style="display: inline-block; font-size: 6px;"><strong>余量: </strong>{{o.stock}}</div><br>     
                 <div style="display: inline-block; font-size: 5px;"><strong>描述: </strong>{{o.description}}</div><br>
               </div>
             </div>
@@ -158,6 +173,12 @@
           },
           dialogFormVisible: false,
           dialogModifyVisible: false,
+          pruchaseFormVisible: false,
+          purchase:{
+            book_id:0,
+            price:0,
+            quantity:0
+          },
           books: [
             {
               author:"刘慈欣",
@@ -204,44 +225,74 @@
               case "title":
               parames+="&title="+value;
               break;
-              case "title":
-              parames+="&title="+value;
+              case "id":
+              parames+="&id="+value;
               break;
-              case "title":
-              parames+="&title="+value;
+              case "isbn":
+              parames+="&isbn="+value;
               break; 
               default:
                 break;
             };
           }
-          this.$axios.get(parames)
-          .then(resp=>{
-            console.log(resp)
-            if(resp.status === 200){
-              this.$message({
-                message: '查询成功',
-                type: 'success'
-              })
-              try{
-                this.books = resp.data.books,
-                this.total = resp.data.page_total
-              }catch(e){
-                console.log(e)
+          if(value!=""&&(this.formInline.searchtype=="id"||this.formInline.searchtype=="isbn"))
+          {
+            parames="/books/"+this.formInline.searchvalue;
+            this.$axios.get(parames)
+            .then(resp=>{
+              console.log(resp)
+              if(resp.status === 200){
+                this.resetbooks();
+                this.books[0]=resp.data;
               }
-            }else{
+              else{
+                this.$message({
+                  message: '查询失败',
+                  type: 'error'
+                })
+              }
+            })
+            .catch(failResponse => {
+              console.log(resp)
               this.$message({
-                message: '查询失败',
-                type: 'error'
-              })
-            }
-          })
-          .catch(failResponse => {
-            console.log(resp)
-            this.$message({
-                message: '查询失败2',
-                type: 'error'
-              })
-          })
+                  message: '查询失败2',
+                  type: 'error'
+                })
+            })
+          }
+          else
+          {
+            this.$axios.get(parames)
+            .then(resp=>{
+              // console.log(resp)
+              if(resp.status === 200){
+                this.$message({
+                  message: '查询成功',
+                  type: 'success'
+                })
+                try{
+                    this.books = resp.data.books,
+                    this.total = resp.data.page_total                  
+
+                }catch(e){
+                  console.log(e)
+                }
+              }else{
+                this.$message({
+                  message: '查询失败',
+                  type: 'error'
+                })
+              }
+            })
+            .catch(failResponse => {
+              console.log(resp)
+              this.$message({
+                  message: '查询失败2',
+                  type: 'error'
+                })
+            })
+          }
+
         },
         reset(){
           this.createbook = {
@@ -257,6 +308,26 @@
             published_date: "2006-01-02T15:04:05Z",
             id:0
           }
+        },
+        resetbooks(){
+          this.books= [
+            {
+              author:"刘慈欣",
+              cover:'https://i.loli.net/2019/04/10/5cada7e73d601.jpg',
+              created_at:"string",
+              description:'',
+              id:0,
+              isbn:"978454856465",
+              on_sale:true,
+              press:'重庆出版社',
+              price:0,
+              published_date:"string",
+              stock:0,
+              title:'三体',
+              updated_at:"string",
+              user_id:0
+            }
+          ]
         },
         submit(){
           this.dialogFormVisible = false,
@@ -341,6 +412,44 @@
         },
         searchSubmit(){
           this.getall();
+        },
+        purchaseclick(id){
+          this.purchase.book_id=id
+          this.pruchaseFormVisible=true
+        },
+        submitpurchase(){
+          this.purchase.price = parseFloat(this.purchase.price)
+          this.purchase.quantity = parseInt(this.purchase.quantity)
+          this.$axios
+          .post('/purchases', this.purchase)
+          .then(resp => {
+            if (resp.status === 201) {
+              this.$message({
+                message: '购买成功',
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: '购买失败',
+                type: 'error'
+              })
+            }
+          })
+          .catch(failResponse => {
+            console.log(resp)
+            this.$message({
+                message: '购买失败',
+                type: 'error'
+              })
+          })
+          this.getall()
+          this.pruchaseFormVisible=false
+          this.resetpurchase()
+        },
+        resetpurchase(){
+          this.purchase.id=0;
+          this.purchase.price=0;
+          this.purchase.quantity=0;        
         }
     }
   }

@@ -46,7 +46,7 @@
             password: this.loginForm.password
           })
           .then(resp => {
-            console.log(resp)
+            // console.log(resp)
             if (resp.status === 200) {
               // 登录成功
               // 保存token
