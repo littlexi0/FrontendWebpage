@@ -24,9 +24,13 @@
                 </el-menu-item>
                 <el-menu-item index="3" @click="saleclk">
                   <i class="el-icon-document"></i>
-                  <span slot="title">销售订单</span>
+                  <span slot="title">销售记录</span>
                 </el-menu-item>
-                <el-menu-item index="4" @click="balanceclk" v-if="true">
+                <el-menu-item index="4" @click="balanceclk">
+                  <i class="el-icon-document"></i>
+                  <span slot="title">流水记录</span>
+                </el-menu-item>
+                <el-menu-item index="5" @click="balanceclk" v-if="true">
                   <i class="el-icon-setting"></i>
                   <span slot="title" >财务管理</span>
                 </el-menu-item>
@@ -39,8 +43,8 @@
           <el-tabs v-model="wtname" :tab-position="left" @tab-click="handleClick">
             <el-tab-pane label="" name="1"><Books></Books></el-tab-pane>
             <el-tab-pane label="" name="2"><Orders></Orders></el-tab-pane>
-            <el-tab-pane label="" name="3">角色管理</el-tab-pane>
-            <el-tab-pane label="" name="4">定时任务补偿</el-tab-pane>
+            <el-tab-pane label="" name="3"><Sales></Sales></el-tab-pane>
+            <el-tab-pane label="" name="4"><Balance></Balance></el-tab-pane>
           </el-tabs>
 
           <!-- <router-view/> -->
@@ -54,11 +58,13 @@
   import Header from './components/Header'
   import Books from './components/Books'
   import Orders from './components/Orders'
+  import Sales from './components/Sales'
+  import Balance from './components/Balance'
   import { TabPane, Tabs } from 'element-ui'
   export default {
     name: 'ManageIndex',
     // 注释：这里的components是局部注册，只能在当前组件中使用
-    components: { SideMenu, Header, Books, Orders,Tabs, TabPane },
+    components: { SideMenu, Header, Books, Orders,Sales,Balance,Tabs, TabPane },
     data () {
       return {
         tabPosition: 'left',

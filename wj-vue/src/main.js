@@ -4,6 +4,7 @@ import router from './router'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import 'echarts/theme/macarons.js'
+// import '//unpkg.com/element-ui@2.15.13/lib/theme-chalk/index.css'
 import store from './store'
 
 import {
@@ -60,10 +61,13 @@ import {
   Loading,
   MessageBox,
   Message,
-  Notification
+  Notification,
+  DatePicker
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
+
+Vue.use(DatePicker);
 Vue.use(Pagination)
 Vue.use(Dialog)
 Vue.use(Menu)
@@ -129,6 +133,7 @@ var axios = require('axios')
 axios.defaults.baseURL = 'https://book.jingyijun.xyz:8443/api'
 // 使请求带上凭证信息
 axios.defaults.withCredentials = true
+
 
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
