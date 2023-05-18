@@ -111,8 +111,22 @@
                       <el-button type="primary" @click="submitpurchase">确 定</el-button>
                     </div>
                 </el-dialog>
-                <el-button type="primary" class="salebutton" round>出售</el-button>
-                <!-- <el-button type="text" class="salebutton">操作按钮</el-button>s -->
+
+                <el-button type="primary" class="salebutton" round @click="saleclick(o.id)">出售</el-button>
+                <el-dialog title="出售信息" :visible.sync="saleFormVisible">
+                  <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
+                    <el-form-item label="价格">
+                      <el-input v-model="sale.price"></el-input>
+                    </el-form-item>
+                    <el-form-item label="数量">
+                      <el-input v-model="sale.quantity"></el-input>
+                    </el-form-item>
+                  </el-form>
+                    <div slot="footer" class="dialog-footer">
+                      <el-button @click="resetsale">重 置</el-button>
+                      <el-button type="primary" @click="submitsale">确 定</el-button>
+                    </div>
+                </el-dialog>
               </div>
               <div class="details">
                 <div style="display: inline-block; font-size: 10px;"><strong>标题: </strong>{{o.title}}</div><br>
@@ -174,7 +188,13 @@
           dialogFormVisible: false,
           dialogModifyVisible: false,
           pruchaseFormVisible: false,
+          saleFormVisible: false,
           purchase:{
+            book_id:0,
+            price:0,
+            quantity:0
+          },
+          sale:{
             book_id:0,
             price:0,
             quantity:0
@@ -235,64 +255,35 @@
                 break;
             };
           }
-          if(value!=""&&(this.formInline.searchtype=="id"||this.formInline.searchtype=="isbn"))
-          {
-            parames="/books/"+this.formInline.searchvalue;
-            this.$axios.get(parames)
-            .then(resp=>{
-              console.log(resp)
-              if(resp.status === 200){
-                this.resetbooks();
-                this.books[0]=resp.data;
-              }
-              else{
-                this.$message({
-                  message: '查询失败',
-                  type: 'error'
-                })
-              }
-            })
-            .catch(failResponse => {
-              console.log(resp)
+          this.$axios.get(parames)
+          .then(resp=>{
+            // console.log(resp)
+            if(resp.status === 200){
               this.$message({
-                  message: '查询失败2',
-                  type: 'error'
-                })
-            })
-          }
-          else
-          {
-            this.$axios.get(parames)
-            .then(resp=>{
-              // console.log(resp)
-              if(resp.status === 200){
-                this.$message({
-                  message: '查询成功',
-                  type: 'success'
-                })
-                try{
-                    this.books = resp.data.books,
-                    this.total = resp.data.page_total                  
+                message: '查询成功',
+                type: 'success'
+              })
+              try{
+                  this.books = resp.data.books,
+                  this.total = resp.data.page_total                  
 
-                }catch(e){
-                  console.log(e)
-                }
-              }else{
-                this.$message({
-                  message: '查询失败',
-                  type: 'error'
-                })
+              }catch(e){
+                console.log(e)
               }
-            })
-            .catch(failResponse => {
-              console.log(resp)
+            }else{
               this.$message({
-                  message: '查询失败2',
-                  type: 'error'
-                })
-            })
-          }
-
+                message: '查询失败',
+                type: 'error'
+              })
+            }
+          })
+          .catch(failResponse => {
+            console.log(resp)
+            this.$message({
+                message: '查询失败2',
+                type: 'error'
+              })
+          })
         },
         reset(){
           this.createbook = {
@@ -450,6 +441,48 @@
           this.purchase.id=0;
           this.purchase.price=0;
           this.purchase.quantity=0;        
+        },
+        purchaseclick(id){
+          this.purchase.book_id=id
+          this.pruchaseFormVisible=true
+        },
+        submitsale(){
+          this.sale.price = parseFloat(this.sale.price)
+          this.sale.quantity = parseInt(this.sale.quantity)
+          this.$axios
+          .post('/sales', this.sale)
+          .then(resp => {
+            if (resp.status === 201) {
+              this.$message({
+                message: '出售成功',
+                type: 'success'
+              })
+            } else if(resp.code === 400){
+              this.$message({
+                message: '出售失败',
+                type: 'error'
+              })
+            }
+          })
+          .catch(failResponse => {
+            console.log(resp)
+            this.$message({
+                message: this.resp.message,
+                type: 'error'
+              })
+          })
+          this.getall()
+          this.saleFormVisible=false
+          this.resetsale()
+        },
+        resetsale(){
+          this.sale.id=0;
+          this.sale.price=0;
+          this.sale.quantity=0;        
+        },
+        saleclick(id){
+          this.sale.book_id=id
+          this.saleFormVisible=true
         }
     }
   }
