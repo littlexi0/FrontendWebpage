@@ -20,11 +20,11 @@
                 </el-menu-item>
                 <el-menu-item index="2" @click="purchaseclk">
                   <i class="el-icon-menu"></i>
-                  <span slot="title">采购管理</span>
+                  <span slot="title">采购订单</span>
                 </el-menu-item>
                 <el-menu-item index="3" @click="saleclk">
                   <i class="el-icon-document"></i>
-                  <span slot="title">销售管理</span>
+                  <span slot="title">销售订单</span>
                 </el-menu-item>
                 <el-menu-item index="4" @click="balanceclk" v-if="true">
                   <i class="el-icon-setting"></i>

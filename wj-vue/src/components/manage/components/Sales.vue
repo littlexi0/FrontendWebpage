@@ -58,10 +58,9 @@
   </template>
   
   <script>
-import { quantity } from 'echarts/lib/util/number'
 
     export default {
-      name: 'Orders',
+      name: 'Sales',
       data () {
         return {
           currentDate: new Date(),

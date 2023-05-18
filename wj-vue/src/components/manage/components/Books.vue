@@ -67,7 +67,7 @@
             <div style="padding: 14px;">
 
               <div class="bottom clearfix">
-                <el-dialog title="创建图书" :visible.sync="dialogModifyVisible">
+                <el-dialog title="修改图书" :visible.sync="dialogModifyVisible">
                   <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
                     <el-form-item label="标题*">
                       <el-input v-model="createbook.title"></el-input>
@@ -255,9 +255,13 @@
                 break;
             };
           }
+          var t = new Date().getTime();
+          parames+="&t="+t;
+          console.log(t)
           this.$axios.get(parames)
           .then(resp=>{
-            // console.log(resp)
+            let Inc = (new Date()).getTime();
+            console.log(resp)
             if(resp.status === 200){
               this.$message({
                 message: '查询成功',
@@ -368,6 +372,7 @@
         submitmodify(id){
           // console.log(2)
           console.log(this.createbook.id)
+          this.createbook.price = parseFloat(this.createbook.price)
           this.$axios.patch('/books/'+this.createbook.id, this.createbook)
           .then(resp => {
             console.log(resp)
@@ -391,7 +396,10 @@
           })
           this.dialogModifyVisible = false
           this.reset()
+          sleep(500)   
           this.getall()
+          sleep(500)
+          this.getall()  
         },
         handleCurrentChange(currentPage){
           this.currentPage = currentPage,
