@@ -38,7 +38,7 @@
         <el-main class="elmain">
           <el-tabs v-model="wtname" :tab-position="left" @tab-click="handleClick">
             <el-tab-pane label="" name="1"><Books></Books></el-tab-pane>
-            <el-tab-pane label="" name="2">配置管理</el-tab-pane>
+            <el-tab-pane label="" name="2"><Orders></Orders></el-tab-pane>
             <el-tab-pane label="" name="3">角色管理</el-tab-pane>
             <el-tab-pane label="" name="4">定时任务补偿</el-tab-pane>
           </el-tabs>
@@ -53,11 +53,12 @@
   import SideMenu from './components/SideMenu'
   import Header from './components/Header'
   import Books from './components/Books'
-import { TabPane, Tabs } from 'element-ui'
+  import Orders from './components/Orders'
+  import { TabPane, Tabs } from 'element-ui'
   export default {
     name: 'ManageIndex',
     // 注释：这里的components是局部注册，只能在当前组件中使用
-    components: { SideMenu, Header, Books, Tabs, TabPane },
+    components: { SideMenu, Header, Books, Orders,Tabs, TabPane },
     data () {
       return {
         tabPosition: 'left',

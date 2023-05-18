@@ -6,8 +6,9 @@ Vue.use(Vuex)
 
 axios.interceptors.response.use(function (response) {
   // 2xx 范围内的状态码都会触发该函数。
-  return response;
-}, function (error) {
+    return response;
+  },
+  function (error) {
   // 超出 2xx 范围的状态码都会触发该函数。
   try {
     console.log(error.response.data)
@@ -15,7 +16,7 @@ axios.interceptors.response.use(function (response) {
   } catch (error) {
     alert('未知错误')
   }
-  return Promise.reject(error);
+  // return Promise.reject(error);
 });
 
 export default new Vuex.Store({

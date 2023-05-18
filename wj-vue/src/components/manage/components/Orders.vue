@@ -157,7 +157,7 @@
   
   <script>
     export default {
-      name: 'Books',
+      name: 'Orders',
       data () {
         return {
           currentDate: new Date(),
