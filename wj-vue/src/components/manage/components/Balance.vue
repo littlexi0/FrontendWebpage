@@ -2,7 +2,7 @@
     <div>
         <div class="timeblock">
             <el-date-picker
-            v-model="value2"
+            v-model="value"
             type="datetimerange"
             :picker-options="pickerOptions"
             range-separator="至"
@@ -10,42 +10,41 @@
             end-placeholder="结束日期"
             align="right">
             </el-date-picker>
-            <el-button type="primary" icon="el-icon-search" circle></el-button>
-        </div>s
+            <el-button type="primary" icon="el-icon-search" circle @click="searchclick"></el-button>
+        </div>
 
-      <!-- <el-row>
-        <el-col :span="21" v-for="(o, index) in balances" :key="o" :offset="1">
-          <el-card :body-style="{ padding: '0px' }" class="elcard">
-            <div style="padding: 14px;">
-              <div class="details">
-                <div style="display: inline-block; font-size: 10px;"><strong>标题: </strong>{{o.book.title}}</div><br>
-                <div style="display: inline-block; font-size: 6px;"><strong>作者: </strong>{{o.book.author}}</div><br>
-                <div style="display: inline-block; font-size: 6px;"><strong>isbn: </strong>{{o.book.isbn}}</div><br>
-                <div style="display: inline-block; font-size: 6px;"><strong>出版社: </strong>{{o.book.press}}</div><br>
-                <div style="display: inline-block; font-size: 6px;"><strong>销售价格: </strong>{{o.price}}</div><br>     
-                <div style="display: inline-block; font-size: 5px;"><strong>销售数量: </strong>{{o.quantity}}</div><br>
-              </div>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row> -->
       <el-table
-        :data="tableData"
+        :data="balances"
         style="width: 100%"
         :row-class-name="tableRowClassName">
         <el-table-column
-          prop="date"
-          label="日期"
-          width="180">
+          prop="id"
+          label="id"
+          width="40">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="姓名"
-          width="180">
+          prop="change"
+          label="收支"
+          width="60">
         </el-table-column>
         <el-table-column
-          prop="address"
-          label="地址">
+          prop="balance"
+          label="余额"
+          width="60">
+        </el-table-column>
+        <el-table-column
+          prop="user_id"
+          label="创建用户id"
+          width="100">
+        </el-table-column>    
+        <el-table-column
+          prop="created_at"
+          label="创建时间"
+          width="280">
+        </el-table-column>    
+        <el-table-column
+          prop="info"
+          label="信息">
         </el-table-column>
       </el-table>
       <el-row style="bottom: 0px;;">
@@ -64,6 +63,8 @@
   </template>
   
   <script>
+  import { get } from 'echarts/lib/CoordinateSystem';
+
 
     export default {
       name: 'Balance',
@@ -76,24 +77,9 @@
           id: 0,
           isbn:0,
           dialogModifyVisible: false,
-          tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
-      
+          starttime:'',
+          endtime:'',
+          searchbytime:false,
           balances: [
             {
               id: 9,
@@ -133,9 +119,7 @@
             }
           }]
         },
-        value:'',
-        value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
-        value2: ''
+        value: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
         }
       },
       mounted:{
@@ -147,8 +131,11 @@
       methods: {
         getall(){
           var t = new Date().getTime();
-          var parames="/sales?page_size="+this.pagesize+"&page_num="+this.currentPage
+          var parames="/balances?page_size="+this.pagesize+"&page_num="+this.currentPage
+          if(this.searchbytime)
+            parames+="&start_time="+this.starttime+"&end_time="+this.endtime;
           parames+="&t="+t;
+          console.log(parames)
           this.$axios.get(parames)
           .then(resp=>{
             console.log(resp)
@@ -158,8 +145,9 @@
                 type: 'success'
               })
               try{
-                  this.sales = resp.data.sales,
-                  this.total = resp.data.page_total                  
+                  this.balances = resp.data.balances,
+                  this.total = resp.data.page_total,
+                  this.tosttime(this.balances)
               }catch(e){
                 console.log(e)
               }
@@ -178,6 +166,15 @@
               })
           })
         },
+        tosttime(balances){
+          for(var i=0;i<balances.length;i++)
+          {
+            var str = balances[i].created_at;
+            var date = new Date(str).toJSON();
+            var newDate=new Date(+new Date(date)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'');
+            balances[i].created_at=newDate;
+          }
+        },
         handleCurrentChange(currentPage){
           this.currentPage = currentPage,
           this.getall()
@@ -187,13 +184,31 @@
           this.getall()
         },
         tableRowClassName({row, rowIndex}) {
-        if (rowIndex === 1) {
+        if (row.operation_type === 1) {
           return 'warning-row';
-        } else if (rowIndex === 3) {
+        } else if (row.operation_type === 2) {
           return 'success-row';
         }
         return '';
-      }
+        },
+        searchclick(){
+          this.sttimetorfc(this.value[0],0)
+          this.sttimetorfc(this.value[1],1)
+          this.searchbytime=true
+          this.getall()
+          this.searchbytime=false
+        },
+        sttimetorfc(nowDate,i){
+          let y = nowDate.getFullYear()
+          let m = nowDate.getMonth()+1<10?'0'+(nowDate.getMonth()+1):(nowDate.getMonth()+1)
+          let d = nowDate.getDate()<10?'0'+nowDate.getDate():nowDate.getDate()
+          let hh = nowDate.getHours()<10?'0'+nowDate.getHours():nowDate.getHours();            
+          let mm = nowDate.getMinutes()<10?'0'+nowDate.getMinutes():nowDate.getMinutes()
+          if(i==0)
+            this.starttime = y +'-' + m + '-' + d + 'T' + hh + ':' + mm + ':' + "00.000"+'%2B08:00'
+          else
+            this.endtime=y +'-' + m + '-' + d + 'T' + hh + ':' + mm + ':' + "00.000"+'%2B08:00'
+        }
     }
   }
   </script>
@@ -240,10 +255,10 @@
   
   <style>
   .el-table .warning-row {
-    background: oldlace;
+    background: rgba(233, 39, 32, 0.059);
   }
 
   .el-table .success-row {
-    background: #f0f9eb;
+    background: #64d52717;
   }
 </style>
