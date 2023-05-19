@@ -1,7 +1,6 @@
 <template>
     <div>
-        <div class="block">
-            <span class="demonstration">带快捷选项</span>
+        <div class="timeblock">
             <el-date-picker
             v-model="value2"
             type="datetimerange"
@@ -11,14 +10,12 @@
             end-placeholder="结束日期"
             align="right">
             </el-date-picker>
+            <el-button type="primary" icon="el-icon-search" circle></el-button>
         </div>s
 
       <!-- <el-row>
-        <el-col :span="21" v-for="(o, index) in sales" :key="o" :offset="1">
+        <el-col :span="21" v-for="(o, index) in balances" :key="o" :offset="1">
           <el-card :body-style="{ padding: '0px' }" class="elcard">
-            <el-button type="text" class="modifybutton">
-              <img :src="o.book.cover" class="image">
-            </el-button>
             <div style="padding: 14px;">
               <div class="details">
                 <div style="display: inline-block; font-size: 10px;"><strong>标题: </strong>{{o.book.title}}</div><br>
@@ -32,6 +29,25 @@
           </el-card>
         </el-col>
       </el-row> -->
+      <el-table
+        :data="tableData"
+        style="width: 100%"
+        :row-class-name="tableRowClassName">
+        <el-table-column
+          prop="date"
+          label="日期"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="姓名"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="地址">
+        </el-table-column>
+      </el-table>
       <el-row style="bottom: 0px;;">
         <el-pagination
           @size-change="handleSizeChange"
@@ -60,33 +76,36 @@
           id: 0,
           isbn:0,
           dialogModifyVisible: false,
-          sales: [
+          tableData: [{
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        }, {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }],
+      
+          balances: [
             {
-                book_id:0,
-                created_at:"string",
-                id:0,
-                price:0,
-                quantity:0,
-                updated_at:"string",
-                user_id:0,
-                book: {
-                    id: 4,
-                    created_at: "2023-05-11T22:39:03.112663+08:00",
-                    updated_at: "2023-05-13T12:34:00.303582+08:00",
-                    user_id: 1,
-                    isbn: "9787213109959",
-                    title: "三体",
-                    description: "",
-                    author: "刘慈欣",
-                    press: "浙江人民出版社",
-                    published_date: "2006-01-02T23:04:05+08:00",
-                    cover: "https://pic.jingyijun.xyz:8443/i/2023/05/12/645db75dbcf9c.jpg",
-                    price: 0,
-                    stock: 0,
-                    on_sale: true
-                }
+              id: 9,
+              created_at: "2023-05-18T21:33:51.261129+08:00",
+              user_id: 1,
+              change: 58,
+              balance: -319,
+              operation_type: 2,
+              operation_id: 4,
+              info: "用户 1 销售收入 58.000000 元"
             }
-            ],
+          ],
           pickerOptions: {
           shortcuts: [{
             text: '最近一周',
@@ -166,10 +185,19 @@
         handleSizeChange(currentSize){
           this.pagesize = currentSize,
           this.getall()
+        },
+        tableRowClassName({row, rowIndex}) {
+        if (rowIndex === 1) {
+          return 'warning-row';
+        } else if (rowIndex === 3) {
+          return 'success-row';
         }
+        return '';
+      }
     }
   }
   </script>
+
 
    <style scoped>
    
@@ -198,6 +226,24 @@
     text-align: left;
     /* background-color: pink; */
   }
+  .timeblock{
+    text-align: left;
+    padding-left: 20px;
+  }
+  /* .el-table .warning-row {
+    background: oldlace;
+  }
+  .el-table .success-row {
+    background: #f0f9eb;
+  } */
   </style>
   
-  
+  <style>
+  .el-table .warning-row {
+    background: oldlace;
+  }
+
+  .el-table .success-row {
+    background: #f0f9eb;
+  }
+</style>

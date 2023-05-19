@@ -278,6 +278,7 @@ import { quantity } from 'echarts/lib/util/number'
                     message: '修改成功',
                     type: 'success'
                 })
+                this.getall()
                 } else {
                 this.$message({
                     message: '修改失败',
@@ -292,7 +293,6 @@ import { quantity } from 'echarts/lib/util/number'
                 })
             })
             this.dialogModifyVisible = false
-            this.getall()
         }
     }
   }

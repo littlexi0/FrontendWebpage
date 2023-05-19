@@ -379,8 +379,9 @@
             if (resp.status === 200) {
               this.$message({
                 message: '修改成功',
-                type: 'success'
+                type: 'success',
               })
+              this.getall()
             } else {
               this.$message({
                 message: '修改失败',
@@ -396,10 +397,6 @@
           })
           this.dialogModifyVisible = false
           this.reset()
-          sleep(500)   
-          this.getall()
-          sleep(500)
-          this.getall()  
         },
         handleCurrentChange(currentPage){
           this.currentPage = currentPage,

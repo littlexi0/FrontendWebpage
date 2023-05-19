@@ -41,10 +41,10 @@
         </el-aside>
         <el-main class="elmain">
           <el-tabs v-model="wtname" :tab-position="left" @tab-click="handleClick">
-            <el-tab-pane label="" name="1"><Books></Books></el-tab-pane>
-            <el-tab-pane label="" name="2"><Orders></Orders></el-tab-pane>
-            <el-tab-pane label="" name="3"><Sales></Sales></el-tab-pane>
-            <el-tab-pane label="" name="4"><Balance></Balance></el-tab-pane>
+            <el-tab-pane label="" name="1"><Books ref="BooksChild"></Books></el-tab-pane>
+            <el-tab-pane label="" name="2"><Orders ref="OrdersChild"></Orders></el-tab-pane>
+            <el-tab-pane label="" name="3"><Sales ref="SalesChild"></Sales></el-tab-pane>
+            <el-tab-pane label="" name="4"><Balance ref="BalanceChild"></Balance></el-tab-pane>
           </el-tabs>
 
           <!-- <router-view/> -->
@@ -84,16 +84,20 @@
     methods:{
       bookclk(){
         this.wtname='1',
+        this.$refs.BooksChild.getall()
         console.log(wtname)
       },
       purchaseclk(){
         this.wtname='2'
+        this.$refs.OrdersChild.getall()
       },
       saleclk(){
         this.wtname='3'
+        this.$refs.SalesChild.getall()
       },
       balanceclk(){
         this.wtname='4'
+        this.$refs.BalanceChild.getall()
       }
     }
   }
