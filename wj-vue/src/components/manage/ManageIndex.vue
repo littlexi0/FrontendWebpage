@@ -45,6 +45,7 @@
             <el-tab-pane label="" name="2"><Orders ref="OrdersChild"></Orders></el-tab-pane>
             <el-tab-pane label="" name="3"><Sales ref="SalesChild"></Sales></el-tab-pane>
             <el-tab-pane label="" name="4"><Balance ref="BalanceChild"></Balance></el-tab-pane>
+            <el-tab-pane label="" name="5"><Users ref="UsersChild"></Users></el-tab-pane>       
           </el-tabs>
 
           <!-- <router-view/> -->
@@ -60,11 +61,12 @@
   import Orders from './components/Orders'
   import Sales from './components/Sales'
   import Balance from './components/Balance'
+  import Users from './components/Users'
   import { TabPane, Tabs } from 'element-ui'
   export default {
     name: 'ManageIndex',
     // 注释：这里的components是局部注册，只能在当前组件中使用
-    components: { SideMenu, Header, Books, Orders,Sales,Balance,Tabs, TabPane },
+    components: { SideMenu, Header, Books, Orders,Sales,Balance,Users,Tabs, TabPane },
     data () {
       return {
         tabPosition: 'left',
@@ -98,6 +100,10 @@
       balanceclk(){
         this.wtname='4'
         this.$refs.BalanceChild.getall()
+      },
+      balanceclk(){
+        this.wtname='5'
+        this.$refs.UsersChild.getall()
       }
     }
   }
