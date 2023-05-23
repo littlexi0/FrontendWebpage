@@ -9,11 +9,15 @@
             <el-col :span="12">
               <!-- <h5></h5> -->
               <el-menu
-                default-active="1"
+                default-active="0"
                 class="el-menu-vertical-demo"
                 background-color="#fff"
                 text-color="#0557b4"
                 active-text-color="#000000">
+                <el-menu-item index="0" @click="homepageclk">
+                  <i class="el-icon-location"></i>
+                  <span slot="title">主页浏览</span>
+                </el-menu-item>
                 <el-menu-item index="1" @click="bookclk">
                   <i class="el-icon-location"></i>
                   <span slot="title">图书管理</span>
@@ -41,6 +45,7 @@
         </el-aside>
         <el-main class="elmain">
           <el-tabs v-model="wtname" :tab-position="left" @tab-click="handleClick">
+            <el-tab-pane label="" name="0"><Homepage ref="HomepageChild"></Homepage></el-tab-pane>
             <el-tab-pane label="" name="1"><Books ref="BooksChild"></Books></el-tab-pane>
             <el-tab-pane label="" name="2"><Orders ref="OrdersChild"></Orders></el-tab-pane>
             <el-tab-pane label="" name="3"><Sales ref="SalesChild"></Sales></el-tab-pane>
@@ -62,16 +67,17 @@
   import Sales from './components/Sales'
   import Balance from './components/Balance'
   import Users from './components/Users'
+  import Homepage from './components/Homepage'
   import { TabPane, Tabs } from 'element-ui'
   export default {
     name: 'ManageIndex',
     // 注释：这里的components是局部注册，只能在当前组件中使用
-    components: { SideMenu, Header, Books, Orders,Sales,Balance,Users,Tabs, TabPane },
+    components: { SideMenu, Homepage, Header, Books, Orders,Sales,Balance,Users,Tabs, TabPane },
     data () {
       return {
         tabPosition: 'left',
         dialogVisible: false,
-        wtname: '1',
+        wtname: '0',
         displayuser: true
       }
     },
@@ -90,10 +96,13 @@
       }
     },
     methods:{
+      homepageclk(){
+        this.wtname='0'
+        this.$refs.HomepageChild.getall()
+      },
       bookclk(){
         this.wtname='1',
         this.$refs.BooksChild.getall()
-        console.log(wtname)
       },
       purchaseclk(){
         this.wtname='2'

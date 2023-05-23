@@ -66,8 +66,7 @@ import {
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-
-Vue.use(DatePicker);
+Vue.use(DatePicker)
 Vue.use(Pagination)
 Vue.use(Dialog)
 Vue.use(Menu)

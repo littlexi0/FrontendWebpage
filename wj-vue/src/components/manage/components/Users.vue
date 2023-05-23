@@ -426,14 +426,14 @@ import { parseDate } from 'echarts/lib/util/number';
         createuserclk(){
           this.dialogFormVisible=true
           this.createuser.avatar="",
-          this.createuser.avatargender="",
-          this.createuser.avatarpassword='',
-          this.createuser.avatarreal_name="",
-          this.createuser.avatarstaff_id="",
-          this.createuser.avatarusername=""
+          this.createuser.gender="",
+          this.createuser.password='',
+          this.createuser.real_name="",
+          this.createuser.staff_id="",
+          this.createuser.username=""
         },
         resetcreate(){
-          this.createuserclk();
+          this.createuserclk()
         },
         submitcreate(){
           var t = new Date().getTime();
