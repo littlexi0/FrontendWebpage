@@ -30,9 +30,9 @@
                   <i class="el-icon-document"></i>
                   <span slot="title">流水记录</span>
                 </el-menu-item>
-                <el-menu-item index="5" @click="balanceclk" v-if="true">
+                <el-menu-item index="5" @click="users" v-if=displayuser>
                   <i class="el-icon-setting"></i>
-                  <span slot="title" >财务管理</span>
+                  <span slot="title" >用户管理</span>
                 </el-menu-item>
               </el-menu>
             </el-col>
@@ -71,10 +71,16 @@
       return {
         tabPosition: 'left',
         dialogVisible: false,
-        wtname: '1'
+        wtname: '1',
+        displayuser: true
       }
     },
     mounted () {
+    },
+    created(){
+      console.log(window.localStorage.getItem('currentusername'))
+      if(window.localStorage.getItem('currentusername') != 'admin')
+        this.displayuser=false;
     },
     watch: {
       $route (to, from) {
@@ -101,7 +107,7 @@
         this.wtname='4'
         this.$refs.BalanceChild.getall()
       },
-      balanceclk(){
+      users(){
         this.wtname='5'
         this.$refs.UsersChild.getall()
       }

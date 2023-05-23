@@ -47,10 +47,13 @@
           })
           .then(resp => {
             // console.log(resp)
+            
             if (resp.status === 200) {
               // 登录成功
               // 保存token
               window.localStorage.setItem('access', resp.data.access)
+              window.localStorage.setItem('currentusername',this.loginForm.username)
+              console.log(resp)
               _this.$store.commit('login')
               // 跳转到首页
               this.$message({
