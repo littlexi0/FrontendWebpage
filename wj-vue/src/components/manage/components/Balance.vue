@@ -195,6 +195,7 @@
           this.sttimetorfc(this.value[0],0)
           this.sttimetorfc(this.value[1],1)
           this.searchbytime=true
+          this.currentPage = 1;
           this.getall()
           this.searchbytime=false
         },
